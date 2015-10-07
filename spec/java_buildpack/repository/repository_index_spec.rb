@@ -32,6 +32,8 @@ describe JavaBuildpack::Repository::RepositoryIndex do
 
   before do
     allow(JavaBuildpack::Util::Cache::DownloadCache).to receive(:new).and_return(application_cache)
+    JavaBuildpack::Repository::RepositoryIndex.class_variable_set(:@@platform, nil)
+    JavaBuildpack::Repository::RepositoryIndex.class_variable_set(:@@architecture, nil)
   end
 
   it 'loads index' do

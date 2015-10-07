@@ -35,7 +35,9 @@ module JavaBuildpack
       def initialize(repository_root)
         @logger = JavaBuildpack::Logging::LoggerFactory.instance.get_logger RepositoryIndex
 
-        @default_repository_root = JavaBuildpack::Util::ConfigurationUtils.load('repository')['default_repository_root']
+        @@platform ||= platform
+        @@architecture ||= architecture
+        @@default_repository_root = JavaBuildpack::Util::ConfigurationUtils.load('repository')['default_repository_root']
                                      .chomp('/')
 
         cache.get("#{canonical repository_root}#{INDEX_PATH}") do |file|
@@ -73,9 +75,9 @@ module JavaBuildpack
 
       def canonical(raw)
         cooked = raw
-                   .gsub(/\{default.repository.root\}/, @default_repository_root)
-                   .gsub(/\{platform\}/, platform)
-                   .gsub(/\{architecture\}/, architecture)
+                   .gsub(/\{default.repository.root\}/, @@default_repository_root)
+                   .gsub(/\{platform\}/, @@platform)
+                   .gsub(/\{architecture\}/, @@architecture)
                    .chomp('/')
         @logger.debug { "#{raw} expanded to #{cooked}" }
         cooked
